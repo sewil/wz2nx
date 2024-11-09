@@ -45,7 +45,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\reWZ\reWZ.csproj">
+    <ProjectReference Include="reWZ\reWZ.csproj">
       <Project>{85f7fe6d-63ac-44a1-83d2-ce5204e7535e}</Project>
       <Name>reWZ</Name>
     </ProjectReference>
