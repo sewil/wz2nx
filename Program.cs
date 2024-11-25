@@ -52,7 +52,7 @@ namespace WZ2NX {
     internal static class Program {
         private static readonly byte[] PKG4 = {0x50, 0x4B, 0x47, 0x34}; // PKG4
         private static readonly bool _is64bit = IntPtr.Size == 8;
-        private static bool dumpImg, dumpSnd;
+        private static bool dumpImg, dumpSnd, sortNodes;
 
         private static void EnsureMultiple(this Stream s, int multiple) {
             int skip = (int) (multiple - (s.Position%multiple));
@@ -77,7 +77,8 @@ namespace WZ2NX {
                 },
                 {"Ds|dumpsound", "Set to include sound properties in the NX file.", a => dumpSnd = true},
                 {"Di|dumpimage", "Set to include canvas properties in the NX file.", a => dumpImg = true},
-                {"wzn", "Set if the input WZ is not encrypted.", a => initialEnc = false}
+                {"wzn", "Set if the input WZ is not encrypted.", a => initialEnc = false},
+                {"sortnodes", "Set if the nodes should be numerically sorted.", a => sortNodes = true},
             };
             oSet.Parse(args);
 
@@ -234,7 +235,16 @@ namespace WZ2NX {
             }
             List<WZObject> @out = new List<WZObject>();
             foreach (WZObject levelNode in nodeLevel.Where(n => n.ChildCount > 0))
-                @out.AddRange(levelNode.OrderBy(f => f.Name, new NumericComparer()));
+            {
+                if (sortNodes)
+                {
+                    @out.AddRange(levelNode.OrderBy(f => f.Name, new NumericComparer()));
+                }
+                else
+                {
+                    @out.AddRange(levelNode);
+                }
+            }
             nodeLevel.Clear();
             nodeLevel = @out;
         }
